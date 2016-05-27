@@ -1,0 +1,10 @@
+C:\Users\chien.harriman.ACORPDOMAIN\documents\visual studio 2013\Projects\EnergyPlusWeatherPull\EnergyPlusWeatherPull\obj\Debug\EnergyPlusWeatherPull.csprojResolveAssemblyReference.cache
+C:\Users\chien.harriman.ACORPDOMAIN\documents\visual studio 2013\Projects\EnergyPlusWeatherPull\EnergyPlusWeatherPull\bin\Debug\EnergyPlusWeatherPull.exe.config
+C:\Users\chien.harriman.ACORPDOMAIN\documents\visual studio 2013\Projects\EnergyPlusWeatherPull\EnergyPlusWeatherPull\bin\Debug\EnergyPlusWeatherPull.exe
+C:\Users\chien.harriman.ACORPDOMAIN\documents\visual studio 2013\Projects\EnergyPlusWeatherPull\EnergyPlusWeatherPull\bin\Debug\EnergyPlusWeatherPull.pdb
+C:\Users\chien.harriman.ACORPDOMAIN\documents\visual studio 2013\Projects\EnergyPlusWeatherPull\EnergyPlusWeatherPull\bin\Debug\CsvHelper.dll
+C:\Users\chien.harriman.ACORPDOMAIN\documents\visual studio 2013\Projects\EnergyPlusWeatherPull\EnergyPlusWeatherPull\bin\Debug\CsvHelper.xml
+C:\Users\chien.harriman.ACORPDOMAIN\documents\visual studio 2013\Projects\EnergyPlusWeatherPull\EnergyPlusWeatherPull\obj\Debug\EnergyPlusWeatherPull.exe
+C:\Users\chien.harriman.ACORPDOMAIN\documents\visual studio 2013\Projects\EnergyPlusWeatherPull\EnergyPlusWeatherPull\obj\Debug\EnergyPlusWeatherPull.pdb
+C:\Users\chien.harriman.ACORPDOMAIN\documents\visual studio 2013\Projects\EnergyPlusWeatherPull\EnergyPlusWeatherPull\bin\Debug\MathNet.Numerics.dll
+C:\Users\chien.harriman.ACORPDOMAIN\documents\visual studio 2013\Projects\EnergyPlusWeatherPull\EnergyPlusWeatherPull\bin\Debug\MathNet.Numerics.xml
