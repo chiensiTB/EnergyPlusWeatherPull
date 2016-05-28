@@ -7,6 +7,7 @@ The goals of this project are two-pronged.  First, to make sure that the whole m
 
 ##Dependencies
 [CsvHelper](https://joshclose.github.io/CsvHelper/)
+
 [Math.Net Numerics](http://numerics.mathdotnet.com/)
 
 ##Use Cases
