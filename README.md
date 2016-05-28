@@ -27,3 +27,5 @@ epw.GetRawData(filepath);
 '''
 
 I have started a statistical class to hold relevant information about the weather data history.  Currently, EnergyPlusWeatherPull can easily return monthly statistics of DB and WB only, but this is quickly being expanded.
+
+This repository consists of the code libraries to simplify work, that can be used in any .NET project.  It is framed in a console application currently so users can play around with the code more easily in a live environment.  Running the console app in debug mode and playing around with calls is the preferred method to get started.
