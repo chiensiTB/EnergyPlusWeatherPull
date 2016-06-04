@@ -14,12 +14,12 @@ namespace EnergyPlusWeatherPull
     {
         public Location Location { get; set; }
         public List<HourlyWeatherData> HourlyWeatherData { get; set; }
-        public List<WeatherFileStats> WeatherFileStats { get; set; }
+        public WeatherFileStats WeatherFileStats { get; set; }
 
         public EPWeatherData()
         {
             HourlyWeatherData = new List<HourlyWeatherData>();
-            WeatherFileStats = new List<WeatherFileStats>();
+            
         }
 
         public void GetRawData(string filepath)
@@ -109,11 +109,14 @@ namespace EnergyPlusWeatherPull
         }
         public void GetWeatherStats(params string[] interests)
         {
+            //always refresh the weather stats
+            this.WeatherFileStats = new WeatherFileStats();
             if (interests.Count() == 0) { 
                 interests = new string[2];
                 interests[0] = "DB";
                 interests[1] = "WB";
             }
+            
             for (int m = 1; m <= 12; m++)
             {
                 switch (m)
@@ -121,74 +124,62 @@ namespace EnergyPlusWeatherPull
                     case 1:
                         //month of data
                         var Jans = this.HourlyWeatherData.FindAll(x => x.Month == m);
-                        WeatherFileStats wf = new WeatherFileStats(Jans,"January",m,31,interests);
-                        WeatherFileStats.Add(wf);
+                        this.WeatherFileStats.SetMonthlyWeatherFileStats(Jans,"January",m,31,interests);
                         Console.WriteLine("Completed January Weather File Statistical Summary.");
                         break;
                     case 2:
                         var Febs = this.HourlyWeatherData.FindAll(x => x.Month == m);
-                        wf = new WeatherFileStats(Febs,"February",m,28,interests);
-                        WeatherFileStats.Add(wf);
+                        this.WeatherFileStats.SetMonthlyWeatherFileStats(Febs,"February",m,28,interests);
                         Console.WriteLine("Completed February Weather File Statistical Summary.");
                         break;
                     case 3:
                         var Mars = this.HourlyWeatherData.FindAll(x => x.Month == m);
-                        wf = new WeatherFileStats(Mars,"March",m,31,interests);
-                        WeatherFileStats.Add(wf);
+                        this.WeatherFileStats.SetMonthlyWeatherFileStats(Mars,"March",m,31,interests);
                         Console.WriteLine("Completed March Weather File Statistical Summary.");
                         break;
                     case 4:
                         var Aprs = this.HourlyWeatherData.FindAll(x => x.Month == m);
-                        wf = new WeatherFileStats(Aprs,"April",m,30,interests);
-                        WeatherFileStats.Add(wf);
+                        this.WeatherFileStats.SetMonthlyWeatherFileStats(Aprs,"April",m,30,interests);
                         Console.WriteLine("Completed April Weather File Statistical Summary.");
                         break;
                     case 5:
                         var Mays = this.HourlyWeatherData.FindAll(x => x.Month == m);
-                        wf = new WeatherFileStats(Mays,"May",m,31,interests);
-                        WeatherFileStats.Add(wf);
+                        this.WeatherFileStats.SetMonthlyWeatherFileStats(Mays,"May",m,31,interests);
                         Console.WriteLine("Completed May Weather File Statistical Summary.");
                         break;
                     case 6:
                         var Juns = this.HourlyWeatherData.FindAll(x => x.Month == m);
-                        wf = new WeatherFileStats(Juns,"June",m,30,interests);
-                        WeatherFileStats.Add(wf);
+                        this.WeatherFileStats.SetMonthlyWeatherFileStats(Juns,"June",m,30,interests);
                         Console.WriteLine("Completed June Weather File Statistical Summary.");
                         break;
                     case 7:
                         var Juls = this.HourlyWeatherData.FindAll(x => x.Month == m);
-                        wf = new WeatherFileStats(Juls,"July",m,31,interests);
-                        WeatherFileStats.Add(wf);
+                        this.WeatherFileStats.SetMonthlyWeatherFileStats(Juls,"July",m,31,interests);
                         Console.WriteLine("Completed July Weather File Statistical Summary.");
                         break;
                     case 8:
                         var Augs = this.HourlyWeatherData.FindAll(x => x.Month == m);
-                        wf = new WeatherFileStats(Augs,"August",m,31,interests);
-                        WeatherFileStats.Add(wf);
+                        this.WeatherFileStats.SetMonthlyWeatherFileStats(Augs,"August",m,31,interests);
                         Console.WriteLine("Completed August Weather File Statistical Summary.");
                         break;
                     case 9:
                         var Septs = this.HourlyWeatherData.FindAll(x => x.Month == m);
-                        wf = new WeatherFileStats(Septs,"September",m,30,interests);
-                        WeatherFileStats.Add(wf);
+                        this.WeatherFileStats.SetMonthlyWeatherFileStats(Septs,"September",m,30,interests);
                         Console.WriteLine("Completed September Weather File Statistical Summary.");
                         break;
                     case 10:
                         var Octs = this.HourlyWeatherData.FindAll(x => x.Month == m);
-                        wf = new WeatherFileStats(Octs,"October",m,31,interests);
-                        WeatherFileStats.Add(wf);
+                        this.WeatherFileStats.SetMonthlyWeatherFileStats(Octs,"October",m,31,interests);
                         Console.WriteLine("Completed October Weather File Statistical Summary.");
                         break;
                     case 11:
                         var Novs = this.HourlyWeatherData.FindAll(x => x.Month == m);
-                        wf = new WeatherFileStats(Novs,"November",m,30,interests);
-                        WeatherFileStats.Add(wf);
+                        this.WeatherFileStats.SetMonthlyWeatherFileStats(Novs,"November",m,30,interests);
                         Console.WriteLine("Completed November Weather File Statistical Summary.");
                         break;
                     case 12:
                         var Decs = this.HourlyWeatherData.FindAll(x => x.Month == m);
-                        wf = new WeatherFileStats(Decs,"December",m,31,interests);
-                        WeatherFileStats.Add(wf);
+                        this.WeatherFileStats.SetMonthlyWeatherFileStats(Decs,"December",m,31,interests);
                         Console.WriteLine("Completed December Weather File Statistical Summary.");
                         break;
                 }
@@ -254,43 +245,70 @@ namespace EnergyPlusWeatherPull
 
     public class WeatherFileStats
     {
-        public string SimpleName { get; set; }
-        public int Id { get; set; }
-        public Monthly Monthly { get; set; }
-        public int ExpectedValCount { get; set; }
-        public int ActualValCount { get; set; }
+        public List<Monthly> Monthly { get; set; }
 
         public WeatherFileStats()
         {
-            this.Monthly = new Monthly();
+            this.Monthly = new List<Monthly>();
         }
 
-        public WeatherFileStats(List<HourlyWeatherData> avails, string monthName, int monthNumber, int numDays, string[] interests)
+        public void SetMonthlyWeatherFileStats(List<HourlyWeatherData> avails, string monthName, int monthNumber, int numDays, string[] interests)
         {
-            this.Monthly = new Monthly();
-            SimpleName = monthName;
-            Id = monthNumber;
-            this.ExpectedValCount = 24 * numDays;
-            this.ActualValCount = avails.Count();
+            Monthly m = new Monthly();
+            m.SimpleName = monthName;
+            m.Id = monthNumber;
+            m.ExpectedValCount = 24 * numDays;
+            m.ActualValCount = avails.Count();
             //loop through desired properties of interest and gather monthly statistics
-            foreach (string interest in interests)
+            for (int s = 0; s < interests.Count(); s++)
             {
+                string interest = interests[s];
                 List<double> values = new List<double>();
                 foreach (HourlyWeatherData wd in avails)
                 {
                     values.Add(Convert.ToDouble(wd.GetType().GetProperty(interest).GetValue(wd, null))); //reflection
                 }
-                PropertyInfo p = this.Monthly.GetType().GetProperty(interest);
+                PropertyInfo p = m.GetType().GetProperty(interest);
                 var stats = new DescriptiveStatistics(values);
-                p.SetValue(this.Monthly, stats, null);
+                p.SetValue(m, stats, null);
+                if (s == interests.Count() - 1) { this.Monthly.Add(m); }
+                
             }
         }
     }
 
     public class Monthly
     {
+        public string SimpleName { get; set; }
+        public int Id { get; set; }
+        public int ExpectedValCount { get; set; }
+        public int ActualValCount { get; set; }
         public DescriptiveStatistics DB { get; set; }
         public DescriptiveStatistics WB { get; set; }
+        public DescriptiveStatistics RH { get; set; }
+        public DescriptiveStatistics Pressure { get; set; }
+        public DescriptiveStatistics HorRadiation { get; set; }
+        public DescriptiveStatistics NormalRadiation { get; set; }
+        public DescriptiveStatistics SkyRadiation { get; set; }
+        public DescriptiveStatistics GHorRadiation { get; set; }
+        public DescriptiveStatistics DirectNormalRadiation { get; set; }
+        public DescriptiveStatistics DiffuseHorizontalRadiation { get; set; }
+        public DescriptiveStatistics GHorIllumination { get; set; }
+        public DescriptiveStatistics DirectNormalIllumination { get; set; }
+        public DescriptiveStatistics DiffuseHorizontalIllumination { get; set; }
+        public DescriptiveStatistics ZenithIllumination { get; set; }
+        public DescriptiveStatistics WindDirection { get; set; }
+        public DescriptiveStatistics WindSpeed { get; set; }
+        public DescriptiveStatistics TotalSkyCover { get; set; }
+        public DescriptiveStatistics OpaqSkyCover { get; set; }
+        public DescriptiveStatistics Visibility { get; set; }
+        public DescriptiveStatistics FieldCeilHeight { get; set; }
+        public DescriptiveStatistics WeatherObserv { get; set; }
+        public DescriptiveStatistics WeatherCodes { get; set; }
+        public DescriptiveStatistics PrecipitationWater { get; set; }
+        public DescriptiveStatistics AerosolOptical { get; set; }
+        public DescriptiveStatistics SnowDepth { get; set; }
+        public DescriptiveStatistics DaysSinceSnow { get; set; }
     }
     
 }
