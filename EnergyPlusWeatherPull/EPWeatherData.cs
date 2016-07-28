@@ -13,12 +13,13 @@ namespace EnergyPlusWeatherPull
     public class EPWeatherData
     {
         public Location Location { get; set; }
-        public List<HourlyWeatherData> HourlyWeatherData { get; set; }
+        public List<HourlyWeatherData> HourlyWeatherDataRawList { get; set; }
         public WeatherFileStats WeatherFileStats { get; set; }
+        
 
         public EPWeatherData()
         {
-            HourlyWeatherData = new List<HourlyWeatherData>();
+            HourlyWeatherDataRawList = new List<HourlyWeatherData>();
             
         }
 
@@ -92,7 +93,7 @@ namespace EnergyPlusWeatherPull
                             epw.AerosolOptical = csv.GetField<decimal>(29);
                             epw.SnowDepth = csv.GetField<decimal>(30);
                             epw.DaysSinceSnow = csv.GetField<decimal>(31);
-                            this.HourlyWeatherData.Add(epw);
+                            this.HourlyWeatherDataRawList.Add(epw);
                             Console.WriteLine("Success grabbing data for {0}", epw.Year + "-" + epw.Month + "-" + epw.Day + " " + "Hour " + epw.Hour);
                         }
                         linect++;
@@ -123,68 +124,91 @@ namespace EnergyPlusWeatherPull
                 {
                     case 1:
                         //month of data
-                        var Jans = this.HourlyWeatherData.FindAll(x => x.Month == m);
+                        var Jans = this.HourlyWeatherDataRawList.FindAll(x => x.Month == m);
                         this.WeatherFileStats.SetMonthlyWeatherFileStats(Jans,"January",m,31,interests);
                         Console.WriteLine("Completed January Weather File Statistical Summary.");
                         break;
                     case 2:
-                        var Febs = this.HourlyWeatherData.FindAll(x => x.Month == m);
+                        var Febs = this.HourlyWeatherDataRawList.FindAll(x => x.Month == m);
                         this.WeatherFileStats.SetMonthlyWeatherFileStats(Febs,"February",m,28,interests);
                         Console.WriteLine("Completed February Weather File Statistical Summary.");
                         break;
                     case 3:
-                        var Mars = this.HourlyWeatherData.FindAll(x => x.Month == m);
+                        var Mars = this.HourlyWeatherDataRawList.FindAll(x => x.Month == m);
                         this.WeatherFileStats.SetMonthlyWeatherFileStats(Mars,"March",m,31,interests);
                         Console.WriteLine("Completed March Weather File Statistical Summary.");
                         break;
                     case 4:
-                        var Aprs = this.HourlyWeatherData.FindAll(x => x.Month == m);
+                        var Aprs = this.HourlyWeatherDataRawList.FindAll(x => x.Month == m);
                         this.WeatherFileStats.SetMonthlyWeatherFileStats(Aprs,"April",m,30,interests);
                         Console.WriteLine("Completed April Weather File Statistical Summary.");
                         break;
                     case 5:
-                        var Mays = this.HourlyWeatherData.FindAll(x => x.Month == m);
+                        var Mays = this.HourlyWeatherDataRawList.FindAll(x => x.Month == m);
                         this.WeatherFileStats.SetMonthlyWeatherFileStats(Mays,"May",m,31,interests);
                         Console.WriteLine("Completed May Weather File Statistical Summary.");
                         break;
                     case 6:
-                        var Juns = this.HourlyWeatherData.FindAll(x => x.Month == m);
+                        var Juns = this.HourlyWeatherDataRawList.FindAll(x => x.Month == m);
                         this.WeatherFileStats.SetMonthlyWeatherFileStats(Juns,"June",m,30,interests);
                         Console.WriteLine("Completed June Weather File Statistical Summary.");
                         break;
                     case 7:
-                        var Juls = this.HourlyWeatherData.FindAll(x => x.Month == m);
+                        var Juls = this.HourlyWeatherDataRawList.FindAll(x => x.Month == m);
                         this.WeatherFileStats.SetMonthlyWeatherFileStats(Juls,"July",m,31,interests);
                         Console.WriteLine("Completed July Weather File Statistical Summary.");
                         break;
                     case 8:
-                        var Augs = this.HourlyWeatherData.FindAll(x => x.Month == m);
+                        var Augs = this.HourlyWeatherDataRawList.FindAll(x => x.Month == m);
                         this.WeatherFileStats.SetMonthlyWeatherFileStats(Augs,"August",m,31,interests);
                         Console.WriteLine("Completed August Weather File Statistical Summary.");
                         break;
                     case 9:
-                        var Septs = this.HourlyWeatherData.FindAll(x => x.Month == m);
+                        var Septs = this.HourlyWeatherDataRawList.FindAll(x => x.Month == m);
                         this.WeatherFileStats.SetMonthlyWeatherFileStats(Septs,"September",m,30,interests);
                         Console.WriteLine("Completed September Weather File Statistical Summary.");
                         break;
                     case 10:
-                        var Octs = this.HourlyWeatherData.FindAll(x => x.Month == m);
+                        var Octs = this.HourlyWeatherDataRawList.FindAll(x => x.Month == m);
                         this.WeatherFileStats.SetMonthlyWeatherFileStats(Octs,"October",m,31,interests);
                         Console.WriteLine("Completed October Weather File Statistical Summary.");
                         break;
                     case 11:
-                        var Novs = this.HourlyWeatherData.FindAll(x => x.Month == m);
+                        var Novs = this.HourlyWeatherDataRawList.FindAll(x => x.Month == m);
                         this.WeatherFileStats.SetMonthlyWeatherFileStats(Novs,"November",m,30,interests);
                         Console.WriteLine("Completed November Weather File Statistical Summary.");
                         break;
                     case 12:
-                        var Decs = this.HourlyWeatherData.FindAll(x => x.Month == m);
+                        var Decs = this.HourlyWeatherDataRawList.FindAll(x => x.Month == m);
                         this.WeatherFileStats.SetMonthlyWeatherFileStats(Decs,"December",m,31,interests);
                         Console.WriteLine("Completed December Weather File Statistical Summary.");
                         break;
                 }
             }
             Console.WriteLine("Done with Weather File Statistical Summaries for All Months.");
+        }
+        
+        public Dictionary<string,List<double>> GetHourlyListsTransformed(List<string> variables)
+        {
+            Dictionary<string, List<double>> returnedList = new Dictionary<string,List<double>>();
+            foreach(string v in variables)
+            {
+                List<double> hrlyvalues = new List<double>();
+                for(int hr = 0; hr < this.HourlyWeatherDataRawList.Count; hr++)
+                {
+                    if(this.HourlyWeatherDataRawList[hr].GetType().GetProperty(v) != null)
+                    {
+                        var val = this.HourlyWeatherDataRawList[hr];
+                        hrlyvalues.Add(Convert.ToDouble(val.GetType().GetProperty(v).GetValue(this.HourlyWeatherDataRawList[hr], null)));
+                    }
+                    else
+                    {
+                        //exception
+                    }
+                }
+                returnedList[v] = hrlyvalues;
+            }
+            return returnedList;
         }
     }
 
@@ -238,11 +262,117 @@ namespace EnergyPlusWeatherPull
         public decimal Elevation { get; set; }
     }
 
-    public class MonthlySummaries
+    //this class does not make any distinctions for the user, and it would in theory allow any temperature units, by currently it expects and calculates  only in Celsius
+    public class DegreeDays
     {
+        public List<DailyDegreeDays> DailyDegDays { get; set; }
+        public decimal CoolingBalancePoint { get; set; } //expects celsius
+        public decimal HeatingBalancePoint { get; set; } //expects celsius
+        public Dictionary<string, List<DailyDegreeDays>> MonthlyDegreeDays { get; set; }
+        public Dictionary<string, decimal> MonthlyCDD { get; set; }
+        public Dictionary<string, decimal> MonthlyHDD { get; set; }
+        public bool IsLeapYear { get; set; }
 
+        //by default, the balance points are 65F in cooling and 55F in heating
+        public DegreeDays()
+        {
+            this.CoolingBalancePoint = Convert.ToDecimal(18.33);
+            this.HeatingBalancePoint = Convert.ToDecimal(12.78);
+            DailyDegDays = new List<DailyDegreeDays>();
+            MonthlyDegreeDays = new Dictionary<string, List<DailyDegreeDays>>();
+            MonthlyCDD = new Dictionary<string,decimal>();
+            MonthlyHDD = new Dictionary<string, decimal>();
+            this.IsLeapYear = false;
+        }
+        //you may optionally set an average balance point temperature
+        public DegreeDays(double coolBP, double heatBP)
+        {
+            this.CoolingBalancePoint = (decimal)coolBP;
+            this.HeatingBalancePoint = (decimal)heatBP;
+            DailyDegDays = new List<DailyDegreeDays>();
+            MonthlyDegreeDays = new Dictionary<string, List<DailyDegreeDays>>();
+            MonthlyCDD = new Dictionary<string, decimal>();
+            MonthlyHDD = new Dictionary<string, decimal>();
+            this.IsLeapYear = false;
+        }
+
+        public DegreeDays(double coolBP, double heatBP, List<HourlyWeatherData> HourlyWeatherData)
+        {
+            this.CoolingBalancePoint = (decimal)coolBP;
+            this.HeatingBalancePoint = (decimal)heatBP;
+            DailyDegDays = new List<DailyDegreeDays>();
+            MonthlyDegreeDays = new Dictionary<string, List<DailyDegreeDays>>();
+            MonthlyCDD = new Dictionary<string, decimal>();
+            MonthlyHDD = new Dictionary<string, decimal>();
+            this.IsLeapYear = false;
+            this.CalculateDailyDegreeDays(HourlyWeatherData);
+            this.CalculateMonthlyDegreeDays();
+        }
+
+        public void CalculateDailyDegreeDays(List<HourlyWeatherData> HourlyWeatherData)
+        {
+
+            for (int d = 0; d < HourlyWeatherData.Count; d += 24)
+            {
+                List<HourlyWeatherData> curRange = HourlyWeatherData.GetRange(d, 24);
+                decimal max = curRange.Max(x => x.DB);
+                decimal min = curRange.Min(x => x.DB);
+                decimal avgDailyDB = (max + min) / 2;
+                DailyDegreeDays ddd = new DailyDegreeDays();
+                if (avgDailyDB < this.HeatingBalancePoint) { ddd.HDD = this.HeatingBalancePoint - avgDailyDB; } else { ddd.HDD = 0; }
+                if (avgDailyDB > this.CoolingBalancePoint) { ddd.CDD = avgDailyDB - this.CoolingBalancePoint; } else { ddd.CDD = 0; }
+                this.DailyDegDays.Add(ddd);
+            }
+        }
+
+        public void CalculateMonthlyDegreeDays()
+        {
+            if(this.DailyDegDays.Count == 365)
+            {
+                MonthlyDegreeDays["January"] = this.DailyDegDays.GetRange(0, 31);
+                MonthlyDegreeDays["February"] = this.DailyDegDays.GetRange(31, 28);
+                MonthlyDegreeDays["March"] = this.DailyDegDays.GetRange(59, 31);
+                MonthlyDegreeDays["April"] = this.DailyDegDays.GetRange(90, 30);
+                MonthlyDegreeDays["May"] = this.DailyDegDays.GetRange(120, 31);
+                MonthlyDegreeDays["June"] = this.DailyDegDays.GetRange(151, 30);
+                MonthlyDegreeDays["July"] = this.DailyDegDays.GetRange(181, 31);
+                MonthlyDegreeDays["August"] = this.DailyDegDays.GetRange(212, 31);
+                MonthlyDegreeDays["September"] = this.DailyDegDays.GetRange(243, 30);
+                MonthlyDegreeDays["October"] = this.DailyDegDays.GetRange(273, 31);
+                MonthlyDegreeDays["November"] = this.DailyDegDays.GetRange(304, 30);
+                MonthlyDegreeDays["December"] = this.DailyDegDays.GetRange(334, 31);
+            }
+            else
+            {
+                this.IsLeapYear = true;
+                MonthlyDegreeDays["January"] = this.DailyDegDays.GetRange(0, 31);
+                MonthlyDegreeDays["February"] = this.DailyDegDays.GetRange(31, 29);
+                MonthlyDegreeDays["March"] = this.DailyDegDays.GetRange(60, 31);
+                MonthlyDegreeDays["April"] = this.DailyDegDays.GetRange(91, 30);
+                MonthlyDegreeDays["May"] = this.DailyDegDays.GetRange(121, 31);
+                MonthlyDegreeDays["June"] = this.DailyDegDays.GetRange(152, 30);
+                MonthlyDegreeDays["July"] = this.DailyDegDays.GetRange(182, 31);
+                MonthlyDegreeDays["August"] = this.DailyDegDays.GetRange(213, 31);
+                MonthlyDegreeDays["September"] = this.DailyDegDays.GetRange(244, 30);
+                MonthlyDegreeDays["October"] = this.DailyDegDays.GetRange(274, 31);
+                MonthlyDegreeDays["November"] = this.DailyDegDays.GetRange(305, 30);
+                MonthlyDegreeDays["December"] = this.DailyDegDays.GetRange(335, 31);
+            }
+            List<string> months = new List<string>{
+                "January","February","March","April","May","June","July","August","September","October","November","December"
+            };
+            foreach(string month in months)
+            {
+                MonthlyCDD[month] = MonthlyDegreeDays[month].Sum(x => x.CDD);
+                MonthlyHDD[month] = MonthlyDegreeDays[month].Sum(x => x.HDD);
+            }
+        }
     }
-
+    public class DailyDegreeDays
+    {
+        public decimal HDD { get; set; }
+        public decimal CDD { get; set; }
+    }
     public class WeatherFileStats
     {
         public List<Monthly> Monthly { get; set; }
@@ -275,8 +405,98 @@ namespace EnergyPlusWeatherPull
                 
             }
         }
+
+        //this takes a passed bin range and the db and wet bulb, and returns 
+        public DBMCWBins GetMCWBandDBBins(Dictionary<string, List<double>> db_wb, double maxBinrange)
+        {
+            DBMCWBins returnbins = new DBMCWBins();
+            List<MCWB> cwbs = new List<MCWB>();
+            returnbins.mcwbs = cwbs;
+            //get the number of bins, low and hi
+            if(db_wb.ContainsKey("DB"))
+            {
+                double max = db_wb["DB"].Max();
+                double min = db_wb["DB"].Min();
+                int numbins = Convert.ToInt16(Math.Ceiling((max - min) / maxBinrange));
+                double bucketrange = (max - min) / numbins;
+                Histogram dbBins = new Histogram(db_wb["DB"], numbins);
+                returnbins.dbBins = dbBins;
+                for(int b = 1; b <= numbins; b++)
+                {
+                    var bin = dbBins.GetBucketOf((bucketrange * b) + min);
+                    //start method to find the mean coincident wetbulb.  Important!
+                    //could be cleaner and easier to read
+                    //created July 2016
+                    MCWB mc = new MCWB();
+                    mc.bucketLower = bin.LowerBound;
+                    mc.buckeUpper = bin.UpperBound;
+                    if(db_wb.ContainsKey("WB"))
+                    {
+                        var dblist = db_wb["DB"];
+                        var wblist = db_wb["WB"];
+                        if(dblist.Count == wblist.Count)
+                        {
+                            var ct = 0;
+                            double sum = 0;
+                            for(int d = 0; d < dblist.Count; d++)
+                            {
+                                if(dblist[d] >= bin.LowerBound && dblist[d] < bin.UpperBound)
+                                {
+                                    sum += wblist[d];
+                                    ct++;
+                                }
+                            }
+                            if(ct > 0)
+                            {
+                                mc.coincidentWB = sum / ct;
+                            }
+                            else
+                            {
+                                mc.coincidentWB = -999999; //need to be able to distinguish it as not finding anything
+                                Console.Write("");
+                            }
+                            cwbs.Add(mc);
+                        }
+                        else
+                        {
+                            //exeption
+                            Console.Write("");
+                        }
+                    }
+                    else
+                    {
+                        //exception
+                        Console.Write("");
+                    }
+                    //end section to calculate mean coincident wetbulb
+                }
+            }
+            else
+            {
+                //exception
+                Console.Write("");
+            }
+            return returnbins;
+        }
+
+        public class MCWB
+        {
+            public double bucketLower { get; set; }
+            public double coincidentWB { get; set; }
+            public double buckeUpper { get; set; }
+        }
+
+        public class DBMCWBins
+        {
+            public List<MCWB> mcwbs { get; set; }
+            public Histogram dbBins { get; set; }
+        }
+
     }
 
+    // provides basic statistics on each point on a monthly basis
+    // min, max, mean, skewness, kurtosis, etc.
+    // DescriptiveStatistics is a Math.Net library and so we currently depend on this library to provide these statistics
     public class Monthly
     {
         public string SimpleName { get; set; }
@@ -311,4 +531,6 @@ namespace EnergyPlusWeatherPull
         public DescriptiveStatistics DaysSinceSnow { get; set; }
     }
     
+
+
 }
