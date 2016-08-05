@@ -23,7 +23,7 @@ The main class library is EPWeatherData.  You can reference this dll in a consol
 Once the DLL has been referenced...To access a .epw file's data, simply create an empty constructor and call GetRawData(filepath) as in the following command:
 
 '''
-//load data into memory
+            //load data into memory
             string filepath = @"C:\EnergyPlusV8-4-0\WeatherData\USA_CA_San.Francisco.Intl.AP.724940_TMY3.epw";
             EPWeatherData epw = new EPWeatherData();
             epw.GetRawData(filepath);
